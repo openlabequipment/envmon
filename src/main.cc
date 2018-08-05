@@ -5,6 +5,7 @@
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
 #include <DNSServer.h>
 
 #include <WiFiManager.h>
@@ -53,6 +54,15 @@ void setup()
     Serial << F("... ip: ") << WiFi.localIP();
     statusLedTicker.detach();
     digitalWrite(LED_BUILTIN, HIGH); // turn off LED
+
+    if (!MDNS.begin("envmon")) {
+        Serial << F("[fail] couldn't set up mdns responder\n");
+        Serial << F("... rebooting\n");
+
+        delay(1000);
+        ESP.reset();
+    }
+    Serial << F("[ok] mDNS responder started\n"); 
 }
 
 void loop()
