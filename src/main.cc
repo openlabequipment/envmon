@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 #include <Ticker.h>
+#include <Streaming.h>
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -17,9 +18,8 @@ void tickStatusLed()
 
 void cb_wifiConfig(WiFiManager *wifi_manager)
 {
-    Serial.println("[ok] entered AP mode for WAP connection config");
-    Serial.print("... ip is: ");
-    Serial.println(WiFi.softAPIP());
+    Serial << F("[ok] entered AP mode for WAP connection config\n");
+    Serial << F("... ip is: ") << WiFi.softAPIP() << '\n';
 
     // faster blinky
     statusLedTicker.attach(0.2, tickStatusLed);
@@ -39,12 +39,15 @@ void setup()
     wifi_manager.setAPCallback(cb_wifiConfig);
     if (!wifi_manager.autoConnect("envmon_configure", "password"))
     {
-        Serial.println("[fail] didn't connect to WAP or hit timeout");
+        Serial << F("[fail] didn't connect to WAP or hit timeout\n");
+        Serial << F("... rebooting\n");
 
+        delay(1000);
         ESP.reset();
     }
 
-    Serial.println("[ok] connected to wifi");
+    Serial << F("[ok] connected to wifi\n");
+    Serial << F("... ip: ") << WiFi.localIP();
     statusLedTicker.detach();
     digitalWrite(LED_BUILTIN, HIGH); // turn off LED
 }
