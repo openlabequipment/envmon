@@ -34,6 +34,9 @@ void setup()
     // start off ~slowly~ doin the blinky
     statusLedTicker.attach(0.6, tickStatusLed);
 
+    // auto-reconnect
+    WiFi.setAutoReconnect(true);
+
     WiFiManager wifi_manager;
     wifi_manager.setDebugOutput(false);
     wifi_manager.setAPCallback(cb_wifiConfig);
